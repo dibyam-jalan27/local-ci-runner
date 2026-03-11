@@ -1,0 +1,51 @@
+pipeline: "Full Features Showcase"
+image: "alpine:3.19"
+
+env:
+  APP_ENV: "ci"
+  BUILD_NUMBER: "100"
+
+hooks:
+  before_pipeline:
+    - "echo '🚀 Pipeline starting...'"
+  after_pipeline:
+    - "echo '🏁 Pipeline finished!'"
+  before_step:
+    - "echo '  ⏳ Step starting...'"
+  after_step:
+    - "echo '  ✅ Step done.'"
+
+stages:
+  - name: "build"
+    steps:
+      - name: "Install Dependencies"
+        run: "echo 'Installing deps...'"
+        timeout: 60
+
+      - name: "Compile"
+        run: "echo 'Compiling...'"
+
+  - name: "test"
+    steps:
+      - name: "Parallel Test Suite"
+        parallel:
+          - name: "Unit Tests"
+            run: "echo 'Unit tests passed!'"
+          - name: "Integration Tests"
+            run: "echo 'Integration tests passed!'"
+          - name: "E2E Tests"
+            run: "echo 'E2E tests passed!'"
+
+  - name: "deploy"
+    steps:
+      - name: "Deploy"
+        run: "echo 'Deployed! BUILD_NUMBER=$BUILD_NUMBER'"
+
+      - name: "Verify"
+        run: "echo 'Verification complete.'"
+        continueOnError: true
+
+notify:
+  on: ["always"]
+  webhook:
+    url: "https://httpbin.org/post"

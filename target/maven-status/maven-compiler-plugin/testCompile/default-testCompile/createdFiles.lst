@@ -1,0 +1,7 @@
+com\localci\trigger\TriggerTest.class
+com\localci\parser\RemotePipelineFetcherTest.class
+com\localci\validator\PipelineValidatorTest.class
+com\localci\parser\PipelineParserTest.class
+com\localci\executor\MatrixExpanderTest.class
+com\localci\report\ReportGeneratorTest.class
+com\localci\parser\PipelineMergerTest.class

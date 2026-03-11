@@ -1,0 +1,23 @@
+{
+  "pipelineName": "Matrix Build Demo",
+  "startTime": "2026-03-04 13:33:28",
+  "endTime": "2026-03-04 13:33:33",
+  "totalDurationMs": 4762,
+  "status": "PASSED",
+  "steps": [
+    {
+      "name": "Build",
+      "status": "PASSED",
+      "durationMs": 187,
+      "retries": 1,
+      "exitCode": 0
+    },
+    {
+      "name": "Test",
+      "status": "PASSED",
+      "durationMs": 171,
+      "retries": 1,
+      "exitCode": 0
+    }
+  ]
+}

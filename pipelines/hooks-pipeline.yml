@@ -1,0 +1,19 @@
+pipeline: "Hooks Demo"
+image: "alpine:3.19"
+
+hooks:
+  before_pipeline:
+    - "echo '=== Pipeline Starting ==='"
+  after_pipeline:
+    - "echo '=== Pipeline Complete ==='"
+  before_step:
+    - "echo '--- Step starting ---'"
+  after_step:
+    - "echo '--- Step finished ---'"
+
+steps:
+  - name: "Build"
+    run: "echo 'Building application...'"
+
+  - name: "Test"
+    run: "echo 'Running tests...'"

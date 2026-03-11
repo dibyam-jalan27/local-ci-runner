@@ -1,0 +1,26 @@
+pipeline: "V5 Features Test Pipeline"
+image: "alpine:3.19"
+
+cache:
+  - "test-cache-v5:/cache"
+
+steps:
+  - name: "Test Caching (Write)"
+    run: "echo 'cache-hit' > /cache/test.txt"
+
+  - name: "Test Caching (Read)"
+    run: "cat /cache/test.txt"
+
+  - name: "Evaluate False Condition"
+    run: "echo 'This should not print!'"
+    if: "false"
+
+  - name: "Evaluate True Condition"
+    run: "echo 'This should print!'"
+    if: "true"
+
+  - name: "Write Env Variable"
+    run: "echo 'export MY_CUSTOM_VAR=HelloWorld' >> /workspace/.localci_env"
+
+  - name: "Read Env Variable"
+    run: "env | grep MY_CUSTOM_VAR || echo $MY_CUSTOM_VAR"

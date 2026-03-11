@@ -1,0 +1,13 @@
+pipeline: "Matrix Build Demo"
+image: "alpine:3.19"
+
+matrix:
+  version: ["1.0", "2.0", "3.0"]
+  arch: ["amd64", "arm64"]
+
+steps:
+  - name: "Build"
+    run: "echo 'Building version=$version arch=$arch'"
+
+  - name: "Test"
+    run: "echo 'Testing version=$version arch=$arch'"

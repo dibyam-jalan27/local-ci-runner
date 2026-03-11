@@ -1,0 +1,22 @@
+pipeline: "C++ Build Pipeline"
+image: "alpine:3.19"
+
+env:
+  CXX: "g++"
+
+steps:
+  - name: "Install build tools"
+    run: "apk add --no-cache g++ make"
+    timeout: 120
+
+  - name: "Show source"
+    run: "echo '--- C++ source ---' && cat /workspace/pipelines/cpp/main.cpp | head -10"
+
+  - name: "Compile"
+    run: "g++ -Wall -Wextra -std=c++17 -o /tmp/app /workspace/pipelines/cpp/main.cpp"
+
+  - name: "Run tests"
+    run: "/tmp/app"
+
+  - name: "Check binary"
+    run: "ls -lh /tmp/app"

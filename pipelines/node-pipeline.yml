@@ -1,0 +1,39 @@
+pipeline: "Node.js Build Pipeline"
+image: "node:20-alpine"
+
+env:
+  NODE_ENV: "production"
+
+secrets:
+  - "NPM_TOKEN"
+
+services:
+  - name: "redis"
+    image: "redis:alpine"
+    ports: ["6379:6379"]
+
+artifacts:
+  - "/workspace/pipelines/node/dist/."
+
+steps:
+  - name: "System info"
+    run: "node -v && npm -v"
+
+  - name: "Show source code"
+    run: "cat /workspace/pipelines/node/package.json && echo '' && cat /workspace/pipelines/node/app.js"
+    
+  - name: "Install Dependencies"
+    run: "cd /workspace/pipelines/node && npm install"
+
+  - name: "Run Linter"
+    run: "cd /workspace/pipelines/node && npm run lint"
+    continueOnError: true
+
+  - name: "Run Tests"
+    run: "cd /workspace/pipelines/node && npm test"
+
+  - name: "Build Production Bundle"
+    run: "cd /workspace/pipelines/node && npm run build"
+
+  - name: "Verify Redis Backend"
+    run: "apk add --no-cache redis && redis-cli -h redis ping"

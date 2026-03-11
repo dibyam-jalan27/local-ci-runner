@@ -1,0 +1,13 @@
+pipeline: "Base Pipeline Template"
+image: "alpine:3.19"
+
+env:
+  APP_ENV: "ci"
+  LOG_LEVEL: "info"
+
+steps:
+  - name: "System Info"
+    run: "uname -a"
+
+  - name: "Show Env"
+    run: "echo APP_ENV=$APP_ENV LOG_LEVEL=$LOG_LEVEL"

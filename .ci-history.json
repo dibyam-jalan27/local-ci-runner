@@ -1,0 +1,9 @@
+[
+  {
+    "pipelineName": "Full Features Showcase",
+    "status": "PASSED",
+    "timestamp": "2026-03-04 13:23:43",
+    "durationMs": 5980,
+    "yamlPath": "D:\\CICD\\local-ci-runner\\pipelines\\full-features-pipeline.yml"
+  }
+]

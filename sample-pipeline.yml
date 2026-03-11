@@ -1,0 +1,26 @@
+pipeline: "Alpine Quick Test"
+image: "alpine:3.19"
+
+env:
+  APP_ENV: "ci"
+  BUILD_NUMBER: "42"
+
+steps:
+  - name: "System info"
+    run: "uname -a"
+
+  - name: "Show workspace"
+    run: "echo '--- Workspace contents ---' && ls -la /workspace"
+
+  - name: "Install curl"
+    run: "apk add --no-cache curl"
+    timeout: 60
+
+  - name: "Test curl"
+    run: "curl --version | head -1"
+
+  - name: "Show environment"
+    run: "echo APP_ENV=$APP_ENV BUILD_NUMBER=$BUILD_NUMBER"
+
+  - name: "Read pipeline file"
+    run: "cat /workspace/sample-pipeline.yml | head -5"

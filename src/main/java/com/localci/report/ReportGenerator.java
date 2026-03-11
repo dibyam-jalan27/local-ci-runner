@@ -1,0 +1,181 @@
+package com.localci.report;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.localci.model.RunReport;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+/**
+ * Generates pipeline run reports in JSON and HTML formats.
+ */
+public class ReportGenerator {
+
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
+    /**
+     * Writes the run report as a JSON file.
+     *
+     * @param report    the run report data
+     * @param outputDir directory to write the report into
+     * @return the path to the generated file
+     */
+    public static String generateJson(RunReport report, String outputDir) throws IOException {
+        ensureDir(outputDir);
+        String path = new File(outputDir, "run-report.json").getAbsolutePath();
+
+        try (FileWriter writer = new FileWriter(path)) {
+            GSON.toJson(report, writer);
+        }
+
+        return path;
+    }
+
+    /**
+     * Writes the run report as a styled HTML file.
+     *
+     * @param report    the run report data
+     * @param outputDir directory to write the report into
+     * @return the path to the generated file
+     */
+    public static String generateHtml(RunReport report, String outputDir) throws IOException {
+        ensureDir(outputDir);
+        String path = new File(outputDir, "run-report.html").getAbsolutePath();
+
+        try (PrintWriter out = new PrintWriter(new FileWriter(path))) {
+            out.println("<!DOCTYPE html>");
+            out.println("<html lang='en'>");
+            out.println("<head>");
+            out.println("  <meta charset='UTF-8'>");
+            out.println("  <meta name='viewport' content='width=device-width, initial-scale=1.0'>");
+            out.println("  <title>Pipeline Report — " + escape(report.getPipelineName()) + "</title>");
+            out.println("  <style>");
+            out.println(CSS);
+            out.println("  </style>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("  <div class='container'>");
+
+            // Header
+            String statusClass = "PASSED".equals(report.getStatus()) ? "status-pass" : "status-fail";
+            out.println("    <div class='header'>");
+            out.println("      <h1>Pipeline Report</h1>");
+            out.println("      <span class='badge " + statusClass + "'>" + report.getStatus() + "</span>");
+            out.println("    </div>");
+
+            // Summary
+            out.println("    <div class='summary'>");
+            out.println("      <div class='summary-item'><span class='label'>Pipeline</span><span class='value'>"
+                    + escape(report.getPipelineName()) + "</span></div>");
+            out.println("      <div class='summary-item'><span class='label'>Started</span><span class='value'>"
+                    + escape(report.getStartTime()) + "</span></div>");
+            out.println("      <div class='summary-item'><span class='label'>Ended</span><span class='value'>"
+                    + escape(report.getEndTime()) + "</span></div>");
+            out.println("      <div class='summary-item'><span class='label'>Duration</span><span class='value'>"
+                    + formatDuration(report.getTotalDurationMs()) + "</span></div>");
+            out.println("    </div>");
+
+            // Steps table
+            out.println("    <h2>Step Results</h2>");
+            out.println("    <table>");
+            out.println(
+                    "      <thead><tr><th>#</th><th>Step</th><th>Status</th><th>Duration</th><th>Retries</th><th>Exit Code</th></tr></thead>");
+            out.println("      <tbody>");
+
+            if (report.getSteps() != null) {
+                for (int i = 0; i < report.getSteps().size(); i++) {
+                    RunReport.StepEntry step = report.getSteps().get(i);
+                    String rowClass = "PASSED".equals(step.getStatus()) ? ""
+                            : "FAILED".equals(step.getStatus()) ? "row-fail" : "row-warn";
+                    out.println("        <tr class='" + rowClass + "'>");
+                    out.println("          <td>" + (i + 1) + "</td>");
+                    out.println("          <td>" + escape(step.getName()) + "</td>");
+                    out.println("          <td><span class='badge "
+                            + ("PASSED".equals(step.getStatus()) ? "status-pass" : "status-fail") + "'>"
+                            + step.getStatus() + "</span></td>");
+                    out.println("          <td>" + formatDuration(step.getDurationMs()) + "</td>");
+                    out.println("          <td>" + step.getRetries() + "</td>");
+                    out.println("          <td>" + step.getExitCode() + "</td>");
+                    out.println("        </tr>");
+                }
+            }
+
+            out.println("      </tbody>");
+            out.println("    </table>");
+            out.println("    <footer>Generated by Local CI Runner v4.0</footer>");
+            out.println("  </div>");
+            out.println("</body>");
+            out.println("</html>");
+        }
+
+        return path;
+    }
+
+    // ── Helpers ──────────────────────────────────────────
+
+    private static void ensureDir(String dir) {
+        File d = new File(dir);
+        if (!d.exists())
+            d.mkdirs();
+    }
+
+    private static String escape(String s) {
+        if (s == null)
+            return "";
+        return s.replace("&", "&amp;").replace("<", "&lt;")
+                .replace(">", "&gt;").replace("\"", "&quot;");
+    }
+
+    private static String formatDuration(long ms) {
+        if (ms < 1000)
+            return ms + "ms";
+        if (ms < 60_000)
+            return String.format("%.1fs", ms / 1000.0);
+        return String.format("%dm %ds", ms / 60_000, (ms % 60_000) / 1000);
+    }
+
+    // ── Inline CSS ──────────────────────────────────────
+
+    private static final String CSS = """
+                * { box-sizing: border-box; margin: 0; padding: 0; }
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    background: #0d1117; color: #c9d1d9; padding: 2rem;
+                }
+                .container { max-width: 900px; margin: 0 auto; }
+                .header {
+                    display: flex; align-items: center; justify-content: space-between;
+                    border-bottom: 1px solid #30363d; padding-bottom: 1rem; margin-bottom: 1.5rem;
+                }
+                h1 { font-size: 1.8rem; color: #f0f6fc; }
+                h2 { font-size: 1.3rem; color: #f0f6fc; margin: 1.5rem 0 0.8rem; }
+                .badge {
+                    padding: 0.3rem 0.8rem; border-radius: 1rem; font-weight: 700;
+                    font-size: 0.85rem; text-transform: uppercase;
+                }
+                .status-pass { background: #238636; color: #fff; }
+                .status-fail { background: #da3633; color: #fff; }
+                .summary {
+                    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                    gap: 1rem; margin-bottom: 1.5rem;
+                }
+                .summary-item {
+                    background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 1rem;
+                }
+                .label { display: block; font-size: 0.75rem; color: #8b949e; text-transform: uppercase; margin-bottom: 0.3rem; }
+                .value { font-size: 1rem; font-weight: 600; color: #f0f6fc; }
+                table {
+                    width: 100%; border-collapse: collapse; background: #161b22;
+                    border: 1px solid #30363d; border-radius: 8px; overflow: hidden;
+                }
+                thead { background: #21262d; }
+                th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #30363d; }
+                th { font-size: 0.8rem; text-transform: uppercase; color: #8b949e; }
+                .row-fail { background: rgba(218, 54, 51, 0.1); }
+                .row-warn { background: rgba(210, 153, 34, 0.1); }
+                footer { margin-top: 2rem; text-align: center; font-size: 0.75rem; color: #484f58; }
+            """;
+}

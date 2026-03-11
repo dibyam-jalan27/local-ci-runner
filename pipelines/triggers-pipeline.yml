@@ -1,0 +1,16 @@
+pipeline: "Triggers Demo"
+image: "alpine:3.19"
+
+triggers:
+  schedule: "*/5 * * * *"
+  watch:
+    - "src/"
+    - "pom.xml"
+  manual: false
+
+steps:
+  - name: "Build"
+    run: "echo 'Building...'"
+
+  - name: "Test"
+    run: "echo 'Testing...'"

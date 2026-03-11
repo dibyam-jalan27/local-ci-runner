@@ -1,0 +1,24 @@
+pipeline: "Stages Demo"
+image: "alpine:3.19"
+
+stages:
+  - name: "build"
+    steps:
+      - name: "Compile"
+        run: "echo 'Compiling source code...'"
+      - name: "Package"
+        run: "echo 'Creating package...'"
+
+  - name: "test"
+    steps:
+      - name: "Unit Tests"
+        run: "echo 'Running unit tests...'"
+      - name: "Coverage"
+        run: "echo 'Generating coverage report...'"
+
+  - name: "deploy"
+    steps:
+      - name: "Deploy to staging"
+        run: "echo 'Deploying to staging...'"
+      - name: "Smoke test"
+        run: "echo 'Running smoke tests...'"

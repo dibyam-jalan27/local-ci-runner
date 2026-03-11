@@ -1,0 +1,22 @@
+pipeline: "Python Data Pipeline"
+image: "python:3.12-alpine"
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+
+steps:
+  - name: "Check Python version"
+    run: "python --version"
+
+  - name: "Install dependencies"
+    run: "pip install --no-cache-dir requests"
+    timeout: 120
+
+  - name: "Show source"
+    run: "echo '--- Python source ---' && cat /workspace/pipelines/python/app.py | head -10"
+
+  - name: "Run app"
+    run: "python /workspace/pipelines/python/app.py"
+
+  - name: "Syntax check"
+    run: "python -m py_compile /workspace/pipelines/python/app.py && echo 'Syntax OK'"

@@ -1,0 +1,30 @@
+pipeline: "Java Build Pipeline"
+image: "eclipse-temurin:17-alpine"
+
+env:
+  JAVA_HOME: "/opt/java/openjdk"
+
+secrets:
+  - "MY_SECRET_KEY"
+
+artifacts:
+  - "/tmp/out/."
+
+steps:
+  - name: "Check Java version"
+    run: "java -version 2>&1"
+
+  - name: "Show source"
+    run: "echo '--- Java source ---' && cat /workspace/pipelines/java/App.java | head -10"
+
+  - name: "Compile"
+    run: "mkdir -p /tmp/out && javac -d /tmp/out /workspace/pipelines/java/App.java"
+
+  - name: "Run tests"
+    run: "java -cp /tmp/out App"
+
+  - name: "Verify artifact"
+    run: "ls -la /tmp/out/App.class && echo 'Build artifact verified'"
+
+  - name: "Print Secret (Should be masked)"
+    run: "echo 'The secret is: ' $MY_SECRET_KEY"

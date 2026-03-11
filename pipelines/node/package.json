@@ -1,0 +1,14 @@
+{
+  "name": "node-pipeline-test",
+  "version": "1.0.0",
+  "description": "A mock Node.js project to test the Local CIRunner",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo 'Running unit tests...' && echo 'Test 1: App mounts -> PASS' && echo 'Test 2: Cache hits -> PASS' && exit 0",
+    "lint": "echo 'Running ESLint...' && echo 'WARN: Unused variable in app.js:12' && exit 1",
+    "build": "echo 'Building production bundle...' && mkdir -p dist && echo 'function launch(){console.log(\"ready\");}' > dist/bundle.min.js && echo 'Build complete: dist/bundle.min.js'"
+  },
+  "author": "Antigravity",
+  "license": "MIT"
+}

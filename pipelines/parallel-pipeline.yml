@@ -1,0 +1,18 @@
+pipeline: "Parallel Steps Demo"
+image: "alpine:3.19"
+
+steps:
+  - name: "Setup"
+    run: "echo 'Setting up...'"
+
+  - name: "Parallel Tests"
+    parallel:
+      - name: "Unit Tests"
+        run: "echo 'Running unit tests...' && sleep 1"
+      - name: "Integration Tests"
+        run: "echo 'Running integration tests...' && sleep 2"
+      - name: "Lint Check"
+        run: "echo 'Linting code...' && sleep 1"
+
+  - name: "Report"
+    run: "echo 'All parallel tests done!'"

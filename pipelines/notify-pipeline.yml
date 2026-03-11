@@ -1,0 +1,14 @@
+pipeline: "Notify Demo"
+image: "alpine:3.19"
+
+notify:
+  on: ["failure", "always"]
+  webhook:
+    url: "https://httpbin.org/post"
+
+steps:
+  - name: "Build"
+    run: "echo 'Building...'"
+
+  - name: "Test"
+    run: "echo 'Testing...'"

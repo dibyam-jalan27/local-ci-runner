@@ -1,0 +1,17 @@
+pipeline: "Services Test Pipeline"
+image: "alpine:3.19"
+
+services:
+  - name: "myredis"
+    image: "redis:alpine"
+    ports: ["6379:6379"]
+
+steps:
+  - name: "Install Redis CLI"
+    run: "apk add --no-cache redis"
+
+  - name: "Ping Redis via DNS"
+    run: "redis-cli -h myredis ping"
+
+  - name: "Set and Get a Value"
+    run: "redis-cli -h myredis set hello world && redis-cli -h myredis get hello"

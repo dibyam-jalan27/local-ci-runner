@@ -1,0 +1,10 @@
+pipeline: "Child Pipeline"
+extends: "base-pipeline.yml"
+
+env:
+  LOG_LEVEL: "debug"
+  CHILD_VAR: "hello"
+
+steps:
+  - name: "Child Step"
+    run: "echo 'Child pipeline running with LOG_LEVEL=$LOG_LEVEL CHILD_VAR=$CHILD_VAR'"

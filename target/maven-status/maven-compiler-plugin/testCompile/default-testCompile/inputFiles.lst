@@ -1,0 +1,7 @@
+D:\CICD\local-ci-runner\src\test\java\com\localci\executor\MatrixExpanderTest.java
+D:\CICD\local-ci-runner\src\test\java\com\localci\parser\PipelineMergerTest.java
+D:\CICD\local-ci-runner\src\test\java\com\localci\parser\PipelineParserTest.java
+D:\CICD\local-ci-runner\src\test\java\com\localci\parser\RemotePipelineFetcherTest.java
+D:\CICD\local-ci-runner\src\test\java\com\localci\report\ReportGeneratorTest.java
+D:\CICD\local-ci-runner\src\test\java\com\localci\trigger\TriggerTest.java
+D:\CICD\local-ci-runner\src\test\java\com\localci\validator\PipelineValidatorTest.java
